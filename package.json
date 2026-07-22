@@ -1,0 +1,30 @@
+{
+  "name": "houserules",
+  "version": "0.1.0",
+  "description": "Extract your repo's house rules into an executable contract: tokens, components, conventions — plus agent skills that create, audit and review against it.",
+  "type": "module",
+  "bin": {
+    "houserules": "./bin/houserules.mjs"
+  },
+  "files": [
+    "bin",
+    "src",
+    "templates",
+    "README.md"
+  ],
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "test": "node --test"
+  },
+  "keywords": [
+    "design-system",
+    "conventions",
+    "ai-agents",
+    "skills",
+    "lint",
+    "contract"
+  ],
+  "license": "MIT"
+}
