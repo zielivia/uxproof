@@ -101,3 +101,30 @@ test('init --no-skills writes the contract but skips skill installation', async 
   assert.ok(!fs.existsSync(path.join(scratch, '.claude', 'skills')))
   fs.rmSync(scratch, { recursive: true, force: true })
 })
+
+test('a repo with no declared tokens gets a proposed de facto palette that never arms the audit', () => {
+  const bare = fs.mkdtempSync(path.join(os.tmpdir(), 'hr-bare-'))
+  fs.cpSync(FIXTURE_SRC, bare, { recursive: true })
+  // Strip the declared tokens; leave the color literals in components.
+  fs.writeFileSync(path.join(bare, 'src', 'app', 'globals.css'), 'body { margin: 0; }\n')
+  fs.appendFileSync(
+    path.join(bare, 'src', 'components', 'Button.tsx'),
+    '\nexport const A = () => <i style={{ color: "#dc2626" }} />\nexport const B = () => <i style={{ color: "#dd2727" }} />\nexport const C = () => <i style={{ color: "#2563eb" }} />\n',
+  )
+  writeContract(bare, buildContract(bare))
+  const contract = JSON.parse(fs.readFileSync(path.join(bare, '.houserules', 'contract.json'), 'utf8'))
+  assert.equal(contract.counts.colorTokens, 0)
+  assert.ok(contract.counts.proposedColors >= 2)
+  const tokens = JSON.parse(fs.readFileSync(path.join(bare, '.houserules', 'tokens.json'), 'utf8'))
+  const proposed = tokens.filter((t) => t.proposed)
+  assert.ok(proposed.length >= 2)
+  // #dc2626 and #dd2727 are perceptually one color — clustered, not duplicated.
+  const values = proposed.map((t) => t.value)
+  assert.ok(!(values.includes('#dc2626') && values.includes('#dd2727')))
+  const conventions = fs.readFileSync(path.join(bare, '.houserules', 'conventions.md'), 'utf8')
+  assert.ok(conventions.includes('Proposed palette'))
+  // The audit stays disarmed: no declared tokens means no color findings.
+  const result = auditRepo(bare)
+  assert.ok(!result.findings.some((f) => f.rule === 'no-hardcoded-colors'))
+  fs.rmSync(bare, { recursive: true, force: true })
+})

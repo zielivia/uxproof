@@ -4,6 +4,7 @@ import { scanRepo } from './scan.mjs'
 import { extractTokens, colorTokens } from './tokens.mjs'
 import { extractComponents, nativeEquivalentsPresent } from './components.mjs'
 import { detectArchetypes } from './archetypes.mjs'
+import { deriveDefactoPalette } from './palette.mjs'
 
 export const CONTRACT_DIR = '.houserules'
 const MANUAL_START = '<!-- houserules:manual-start -->'
@@ -14,6 +15,10 @@ export function buildContract(root) {
   const { sources, tokens } = extractTokens(root, scan.styling.cssFiles)
   const components = extractComponents(root, scan.componentRoots)
   const archetypes = detectArchetypes(root)
+  // No declared tokens: document the de facto palette instead. Proposed
+  // tokens never arm the audit (colorTokens stays 0).
+  const derivedPalette = colorTokens(tokens).length === 0 ? deriveDefactoPalette(root) : []
+  const allTokens = derivedPalette.length ? [...tokens, ...derivedPalette] : tokens
   return {
     version: 1,
     generatedBy: 'houserules',
@@ -32,8 +37,9 @@ export function buildContract(root) {
       tokens: tokens.length,
       colorTokens: colorTokens(tokens).length,
       components: components.length,
+      proposedColors: derivedPalette.length,
     },
-    _tokens: tokens,
+    _tokens: allTokens,
     _components: components,
   }
 }
@@ -71,6 +77,12 @@ function renderConventions(contract, manualSection) {
   lines.push('')
   lines.push('Rule: colors come from tokens. A raw hex/rgb value in component code is a finding unless the manual section grants an exception.')
   lines.push('')
+  if (contract.counts.proposedColors > 0) {
+    lines.push('### Proposed palette (derived from code)')
+    lines.push('')
+    lines.push(`No declared tokens were found, so the ${contract.counts.proposedColors} colors above marked \`proposed-*\` are the palette this codebase ALREADY uses, clustered perceptually from its literals. This is day one of a design system, not a rule yet: rename the ones you keep, declare them as CSS custom properties, re-run \`houserules sync\` — the audit arms itself only once declared tokens exist.`)
+    lines.push('')
+  }
   lines.push('## Components')
   lines.push('')
   lines.push(`${contract.counts.components} components registered from:`)

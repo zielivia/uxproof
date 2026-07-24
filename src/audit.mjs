@@ -33,7 +33,7 @@ export function auditRepo(root, { files = null, fix = false, scope = null } = {}
   const findings = []
   const fixes = []
   const hasColorTokens = contract.counts.colorTokens > 0
-  const paletteTokens = tokens.filter((t) => t.kind === 'color' || t.kind === 'alias')
+  const paletteTokens = tokens.filter((t) => (t.kind === 'color' || t.kind === 'alias') && !t.proposed)
 
   const scopeRoot = scope ? path.join(root, scope) : root
   const targets = (files ?? walkFiles(scopeRoot, { extensions: ['.tsx', '.jsx'], maxFiles: 20000, maxDepth: 12 })

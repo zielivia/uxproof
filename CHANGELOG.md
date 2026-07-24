@@ -7,3 +7,12 @@ collections), audit with scoped paths and perceptual color autofix, drift
 guard (sync --check), self-contained gallery, screen archetypes, three
 bundled agent skills. Zero runtime dependencies; node:test suite; verified
 end-to-end from an npm-pack tarball in a fresh project.
+
+## 0.2.0 (2026-07-24)
+
+De facto palette for repos with no declared tokens: init collects the
+color literals the code actually uses, clusters them perceptually in
+Oklab, and writes them as proposed-* tokens with usage counts — day one
+of a design system instead of an empty contract. Proposed tokens never
+arm the audit and are excluded from --fix suggestions; declaring real
+tokens and re-running sync arms the rules.
