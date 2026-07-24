@@ -89,3 +89,15 @@ test('gallery.html renders swatches, components and shapes', () => {
   // Self-contained: no external URLs.
   assert.ok(!/https?:\/\//.test(html))
 })
+
+test('init --no-skills writes the contract but skips skill installation', async () => {
+  const { execFileSync } = await import('node:child_process')
+  const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'hr-noskills-'))
+  fs.cpSync(FIXTURE_SRC, scratch, { recursive: true })
+  const bin = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'bin', 'houserules.mjs')
+  const out = execFileSync(process.execPath, [bin, 'init', '--no-skills'], { cwd: scratch, encoding: 'utf8' })
+  assert.ok(out.includes('skills: skipped'))
+  assert.ok(fs.existsSync(path.join(scratch, '.houserules', 'contract.json')))
+  assert.ok(!fs.existsSync(path.join(scratch, '.claude', 'skills')))
+  fs.rmSync(scratch, { recursive: true, force: true })
+})

@@ -9,7 +9,10 @@ import { generateGallery } from '../src/gallery.mjs'
 const HELP = `houserules — your repo's conventions, made executable.
 
 Usage:
-  houserules init            Scan the repo, write ${CONTRACT_DIR}/, install agent skills
+  houserules init [--no-skills]
+                             Scan the repo, write ${CONTRACT_DIR}/, install agent skills
+                             (--no-skills: contract only — for setups where another
+                             skill collection provides the agent workflow)
   houserules audit [--fix]   Check source files against the contract (--fix: replace hardcoded colors with the nearest token)
   houserules sync [--check]  Re-scan and regenerate the contract (--check: report drift only, exit 1 on drift)
   houserules gallery         Generate ${CONTRACT_DIR}/gallery.html — tokens, components and screen shapes on one page
@@ -30,11 +33,12 @@ function main() {
         process.exit(1)
       }
       const dir = writeContract(root, contract)
-      const skills = installSkills(root)
+      const withSkills = !rest.includes('--no-skills')
+      const skills = withSkills ? installSkills(root) : []
       console.log(`houserules init: contract written to ${dir}`)
       console.log(`  framework: ${contract.framework}${contract.workspace ? ' (monorepo)' : ''}, styling: ${contract.styling.system}`)
       console.log(`  tokens: ${contract.counts.tokens} (${contract.counts.colorTokens} colors), components: ${contract.counts.components}`)
-      console.log(`  skills installed: ${skills.join(', ')}`)
+      console.log(withSkills ? `  skills installed: ${skills.join(', ')}` : '  skills: skipped (--no-skills)')
       console.log('Next: open .houserules/conventions.md and fill the manual section. Commit the lot.')
       break
     }
