@@ -15,7 +15,7 @@ npx houserules init
    - `contract.json` — the machine-readable summary
    - `tokens.json` / `components.json` — the full registries
    - `conventions.md` — the human-readable house rules, with a manual section for the judgment calls only your team can know. The manual section survives regeneration.
-3. **Installs skills** into `.claude/skills/` (works with Claude Code out of the box):
+3. **Installs skills** for coding agents into the project skill directory:
    - `houserules-create` — build new UI the way this repo builds it: registry components, tokens, existing screens as models
    - `houserules-audit` — check code against the contract and fix violations
    - `houserules-review` — evidence-first UX review: every recommendation carries evidence, pattern, trade-off and an acceptance criterion
