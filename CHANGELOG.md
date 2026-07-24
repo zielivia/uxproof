@@ -16,3 +16,10 @@ Oklab, and writes them as proposed-* tokens with usage counts — day one
 of a design system instead of an empty contract. Proposed tokens never
 arm the audit and are excluded from --fix suggestions; declaring real
 tokens and re-running sync arms the rules.
+
+## 0.3.0 (2026-07-24)
+
+Renamed to uxproof: the npm similarity rule blocks the previous name
+(an existing package differs only by a hyphen). Same tool, new command
+(npx uxproof), new contract directory (.uxproof/), bundled skills
+renamed accordingly. No behavior changes.

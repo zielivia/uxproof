@@ -47,7 +47,7 @@ export function generateGallery(root) {
   .toast.show { opacity: 1; }
 </style>
 <h1>House rules</h1>
-<p class="muted">Generated from <code>${CONTRACT_DIR}/</code> — ${esc(contract.framework)}${contract.workspace ? ' (monorepo)' : ''}, ${esc(contract.styling.system)}. Regenerate with <code>houserules gallery</code>.</p>
+<p class="muted">Generated from <code>${CONTRACT_DIR}/</code> — ${esc(contract.framework)}${contract.workspace ? ' (monorepo)' : ''}, ${esc(contract.styling.system)}. Regenerate with <code>uxproof gallery</code>.</p>
 
 <h2>Colors (${colors.length}) <span class="muted">— click to copy the token</span></h2>
 <div class="swatches">

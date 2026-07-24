@@ -22,7 +22,7 @@ export function checkDrift(root) {
 
 export function syncContract(root, { check = false } = {}) {
   if (!hasContract(root)) {
-    throw new Error('No contract found. Run `houserules init` first.')
+    throw new Error('No contract found. Run `uxproof init` first.')
   }
   const { drifted, diff, fresh } = checkDrift(root)
   if (check) return { drifted, diff, wrote: false }
@@ -31,8 +31,8 @@ export function syncContract(root, { check = false } = {}) {
 }
 
 export function formatDrift({ drifted, diff, wrote }) {
-  if (!drifted) return 'houserules sync: contract is in sync with the repo.'
-  const lines = ['houserules sync: drift detected.']
+  if (!drifted) return 'uxproof sync: contract is in sync with the repo.'
+  const lines = ['uxproof sync: drift detected.']
   const label = {
     tokensAdded: 'tokens added',
     tokensRemoved: 'tokens removed',
@@ -45,6 +45,6 @@ export function formatDrift({ drifted, diff, wrote }) {
       lines.push(`  ${label[key]} (${items.length}): ${shown}${items.length > 15 ? ', …' : ''}`)
     }
   }
-  lines.push(wrote ? 'Contract regenerated (manual rules preserved).' : 'Run `houserules sync` without --check to regenerate.')
+  lines.push(wrote ? 'Contract regenerated (manual rules preserved).' : 'Run `uxproof sync` without --check to regenerate.')
   return lines.join('\n')
 }

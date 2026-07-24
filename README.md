@@ -1,24 +1,24 @@
-# houserules
+# uxproof
 
 Your repo's conventions, made executable.
 
-Every team has a "how we do things here" that lives in seniors' heads. AI agents don't know it, so AI-generated code always reads like a transplant: right framework, wrong house. `houserules` extracts those conventions into a committed contract and installs agent skills that create, audit and review code against it.
+Every team has a "how we do things here" that lives in seniors' heads. AI agents don't know it, so AI-generated code always reads like a transplant: right framework, wrong house. `uxproof` extracts those conventions into a committed contract and installs agent skills that create, audit and review code against it.
 
 ```
-npx houserules init
+npx uxproof init
 ```
 
 ## What init does
 
 1. **Scans the repo** — framework, styling system, design tokens (CSS custom properties), component registry (exported components from your component directories), libraries in use (forms, validation, tables, icons).
-2. **Writes the contract** to `.houserules/`:
+2. **Writes the contract** to `.uxproof/`:
    - `contract.json` — the machine-readable summary
    - `tokens.json` / `components.json` — the full registries
    - `conventions.md` — the human-readable house rules, with a manual section for the judgment calls only your team can know. The manual section survives regeneration.
 3. **Installs skills** for coding agents into the project skill directory:
-   - `houserules-create` — build new UI the way this repo builds it: registry components, tokens, existing screens as models
-   - `houserules-audit` — check code against the contract and fix violations
-   - `houserules-review` — evidence-first UX review: every recommendation carries evidence, pattern, trade-off and an acceptance criterion
+   - `uxproof-create` — build new UI the way this repo builds it: registry components, tokens, existing screens as models
+   - `uxproof-audit` — check code against the contract and fix violations
+   - `uxproof-review` — evidence-first UX review: every recommendation carries evidence, pattern, trade-off and an acceptance criterion
 
 Commit the lot. The contract is versioned, reviewable and argued about in PRs — like code, because now it is code.
 
@@ -26,12 +26,12 @@ Commit the lot. The contract is versioned, reviewable and argued about in PRs �
 
 | Command | What it does |
 |---|---|
-| `houserules init` | Scan, write contract, install skills |
-| `houserules audit` | Check source files against the contract (exit 1 on findings — CI-friendly) |
-| `houserules audit --fix` | Replace hardcoded colors with the nearest token (perceptual distance in Oklab; semantic aliases win ties; distant colors are reported, never guessed) |
-| `houserules sync` | Re-scan and regenerate the contract; manual rules survive |
-| `houserules sync --check` | Report drift only, exit 1 if the contract is stale (CI-friendly) |
-| `houserules gallery` | Generate `.houserules/gallery.html` — a self-contained page with color swatches (click to copy), token tables, the component inventory and screen shapes |
+| `uxproof init` | Scan, write contract, install skills |
+| `uxproof audit` | Check source files against the contract (exit 1 on findings — CI-friendly) |
+| `uxproof audit --fix` | Replace hardcoded colors with the nearest token (perceptual distance in Oklab; semantic aliases win ties; distant colors are reported, never guessed) |
+| `uxproof sync` | Re-scan and regenerate the contract; manual rules survive |
+| `uxproof sync --check` | Report drift only, exit 1 if the contract is stale (CI-friendly) |
+| `uxproof gallery` | Generate `.uxproof/gallery.html` — a self-contained page with color swatches (click to copy), token tables, the component inventory and screen shapes |
 
 ## Screen shapes
 

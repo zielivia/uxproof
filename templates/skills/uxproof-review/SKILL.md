@@ -1,5 +1,5 @@
 ---
-name: houserules-review
+name: uxproof-review
 description: Evidence-first UX/UI review of a screen or flow against this repo's contract. Use when the user asks for design feedback, a UX review, or "is this screen good".
 ---
 
@@ -11,7 +11,7 @@ Every recommendation you make must carry four parts: the evidence, the pattern, 
 
 Tag every claim with its strongest available evidence, honestly:
 
-1. `[PRODUCT]` — this repo's own contract, analytics or documented decisions (`.houserules/`, specs, existing patterns).
+1. `[PRODUCT]` — this repo's own contract, analytics or documented decisions (`.uxproof/`, specs, existing patterns).
 2. `[STANDARD]` — WCAG, platform guidelines, established norms with a citation.
 3. `[PLATFORM]` — how the framework/OS behaves by default.
 4. `[RESEARCH]` — published usability research (name the source).
@@ -22,7 +22,7 @@ Never dress an `[ASSUMPTION]` as a `[STANDARD]`. A review whose findings are mos
 
 ## Procedure
 
-1. Read `.houserules/conventions.md` and `contract.json` first — the house has rules; review against them, not against your taste.
+1. Read `.uxproof/conventions.md` and `contract.json` first — the house has rules; review against them, not against your taste.
 2. Walk the screen as its user: entry point, primary task, exit. Note where you stall.
 3. Check the state matrix: default, empty, loading, error, no-permission, long-content, narrow viewport. Missing states are findings.
 4. Weigh each finding: impact (how badly it hurts) × frequency (how often users hit it) × reach (how many users). Sort by that, not by how easy the fix is.

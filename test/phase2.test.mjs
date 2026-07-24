@@ -14,7 +14,7 @@ const FIXTURE_SRC = path.join(path.dirname(fileURLToPath(import.meta.url)), 'fix
 let root
 
 before(() => {
-  root = fs.mkdtempSync(path.join(os.tmpdir(), 'houserules-p2-'))
+  root = fs.mkdtempSync(path.join(os.tmpdir(), 'uxproof-p2-'))
   fs.cpSync(FIXTURE_SRC, root, { recursive: true })
   writeContract(root, buildContract(root))
 })
@@ -58,9 +58,9 @@ test('archetype detection classifies the fixture pages', () => {
 })
 
 test('archetypes land in contract.json and conventions.md', () => {
-  const contract = JSON.parse(fs.readFileSync(path.join(root, '.houserules', 'contract.json'), 'utf8'))
+  const contract = JSON.parse(fs.readFileSync(path.join(root, '.uxproof', 'contract.json'), 'utf8'))
   assert.ok(contract.archetypes.length >= 2)
-  const conventions = fs.readFileSync(path.join(root, '.houserules', 'conventions.md'), 'utf8')
+  const conventions = fs.readFileSync(path.join(root, '.uxproof', 'conventions.md'), 'utf8')
   assert.ok(conventions.includes('## Screen shapes'))
 })
 
@@ -94,10 +94,10 @@ test('init --no-skills writes the contract but skips skill installation', async 
   const { execFileSync } = await import('node:child_process')
   const scratch = fs.mkdtempSync(path.join(os.tmpdir(), 'hr-noskills-'))
   fs.cpSync(FIXTURE_SRC, scratch, { recursive: true })
-  const bin = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'bin', 'houserules.mjs')
+  const bin = path.join(path.dirname(fileURLToPath(import.meta.url)), '..', 'bin', 'uxproof.mjs')
   const out = execFileSync(process.execPath, [bin, 'init', '--no-skills'], { cwd: scratch, encoding: 'utf8' })
   assert.ok(out.includes('skills: skipped'))
-  assert.ok(fs.existsSync(path.join(scratch, '.houserules', 'contract.json')))
+  assert.ok(fs.existsSync(path.join(scratch, '.uxproof', 'contract.json')))
   assert.ok(!fs.existsSync(path.join(scratch, '.claude', 'skills')))
   fs.rmSync(scratch, { recursive: true, force: true })
 })
@@ -112,16 +112,16 @@ test('a repo with no declared tokens gets a proposed de facto palette that never
     '\nexport const A = () => <i style={{ color: "#dc2626" }} />\nexport const B = () => <i style={{ color: "#dd2727" }} />\nexport const C = () => <i style={{ color: "#2563eb" }} />\n',
   )
   writeContract(bare, buildContract(bare))
-  const contract = JSON.parse(fs.readFileSync(path.join(bare, '.houserules', 'contract.json'), 'utf8'))
+  const contract = JSON.parse(fs.readFileSync(path.join(bare, '.uxproof', 'contract.json'), 'utf8'))
   assert.equal(contract.counts.colorTokens, 0)
   assert.ok(contract.counts.proposedColors >= 2)
-  const tokens = JSON.parse(fs.readFileSync(path.join(bare, '.houserules', 'tokens.json'), 'utf8'))
+  const tokens = JSON.parse(fs.readFileSync(path.join(bare, '.uxproof', 'tokens.json'), 'utf8'))
   const proposed = tokens.filter((t) => t.proposed)
   assert.ok(proposed.length >= 2)
   // #dc2626 and #dd2727 are perceptually one color — clustered, not duplicated.
   const values = proposed.map((t) => t.value)
   assert.ok(!(values.includes('#dc2626') && values.includes('#dd2727')))
-  const conventions = fs.readFileSync(path.join(bare, '.houserules', 'conventions.md'), 'utf8')
+  const conventions = fs.readFileSync(path.join(bare, '.uxproof', 'conventions.md'), 'utf8')
   assert.ok(conventions.includes('Proposed palette'))
   // The audit stays disarmed: no declared tokens means no color findings.
   const result = auditRepo(bare)

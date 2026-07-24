@@ -17,7 +17,7 @@ let root
 
 before(() => {
   // Copy the fixture to a temp dir so tests can mutate it freely.
-  root = fs.mkdtempSync(path.join(os.tmpdir(), 'houserules-test-'))
+  root = fs.mkdtempSync(path.join(os.tmpdir(), 'uxproof-test-'))
   fs.cpSync(FIXTURE_SRC, root, { recursive: true })
 })
 
@@ -81,10 +81,10 @@ test('init writes contract files and audit finds the planted violations', () => 
 })
 
 test('conventions.md manual section survives regeneration', () => {
-  const file = path.join(root, '.houserules', 'conventions.md')
+  const file = path.join(root, '.uxproof', 'conventions.md')
   const edited = fs.readFileSync(file, 'utf8').replace(
-    /<!-- houserules:manual-start -->[\s\S]*<!-- houserules:manual-end -->/,
-    '<!-- houserules:manual-start -->\nNigdy nie używamy amber w chipach.\n<!-- houserules:manual-end -->',
+    /<!-- uxproof:manual-start -->[\s\S]*<!-- uxproof:manual-end -->/,
+    '<!-- uxproof:manual-start -->\nNigdy nie używamy amber w chipach.\n<!-- uxproof:manual-end -->',
   )
   fs.writeFileSync(file, edited)
   writeContract(root, buildContract(root))
@@ -110,10 +110,10 @@ test('skills install into .claude/skills', () => {
   const installed = installSkills(root)
   assert.deepEqual(
     installed.sort(),
-    ['houserules-audit', 'houserules-create', 'houserules-review'],
+    ['uxproof-audit', 'uxproof-create', 'uxproof-review'],
   )
   const skill = fs.readFileSync(
-    path.join(root, '.claude', 'skills', 'houserules-review', 'SKILL.md'),
+    path.join(root, '.claude', 'skills', 'uxproof-review', 'SKILL.md'),
     'utf8',
   )
   assert.ok(skill.includes('[ASSUMPTION]'))

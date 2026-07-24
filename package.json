@@ -1,10 +1,10 @@
 {
-  "name": "houserules",
-  "version": "0.2.0",
+  "name": "uxproof",
+  "version": "0.3.0",
   "description": "Extract your repo's house rules into an executable contract: tokens, components, conventions \u2014 plus agent skills that create, audit and review against it.",
   "type": "module",
   "bin": {
-    "houserules": "./bin/houserules.mjs"
+    "uxproof": "./bin/uxproof.mjs"
   },
   "files": [
     "bin",
@@ -29,7 +29,7 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/zielivia/houserules.git"
+    "url": "git+https://github.com/zielivia/uxproof.git"
   },
-  "homepage": "https://github.com/zielivia/houserules#readme"
+  "homepage": "https://github.com/zielivia/uxproof#readme"
 }

@@ -11,7 +11,7 @@ const RAW_ELEMENT_RE = (element) => new RegExp(`<${element}(?=[\\s>/])`, 'g')
 /** Lines that legitimately carry raw values: token definitions, svg fills in icon files, tests. */
 function isExemptFile(rel) {
   return (
-    rel.includes('.houserules/') ||
+    rel.includes('.uxproof/') ||
     /\.(css|scss|json|md|svg)$/.test(rel) ||
     /\.(test|spec|stories)\.[jt]sx?$/.test(rel) ||
     rel.includes('__tests__') ||
@@ -106,7 +106,7 @@ export function formatFindings({ findings, fixes = [], filesChecked }) {
     lines.push(`${fx.file}  fixed: ${fx.from} → ${fx.to} (Δ ${fx.distance.toFixed(3)})`)
   }
   if (!findings.length) {
-    lines.push(`houserules audit: ${filesChecked} files checked, ${fixes.length ? `${fixes.length} fix(es) applied, ` : ''}no findings left. Clean.`)
+    lines.push(`uxproof audit: ${filesChecked} files checked, ${fixes.length ? `${fixes.length} fix(es) applied, ` : ''}no findings left. Clean.`)
     return lines.join('\n')
   }
   for (const f of findings) {
