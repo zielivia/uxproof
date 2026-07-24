@@ -13,7 +13,9 @@ Usage:
                              Scan the repo, write ${CONTRACT_DIR}/, install agent skills
                              (--no-skills: contract only — for setups where another
                              skill collection provides the agent workflow)
-  houserules audit [--fix]   Check source files against the contract (--fix: replace hardcoded colors with the nearest token)
+  houserules audit [path] [--fix]
+                             Check source files against the contract, optionally scoped to a
+                             subdirectory (--fix: replace hardcoded colors with the nearest token)
   houserules sync [--check]  Re-scan and regenerate the contract (--check: report drift only, exit 1 on drift)
   houserules gallery         Generate ${CONTRACT_DIR}/gallery.html — tokens, components and screen shapes on one page
   houserules help            This message
@@ -47,7 +49,8 @@ function main() {
         console.error('houserules: no contract found. Run `houserules init` first.')
         process.exit(1)
       }
-      const result = auditRepo(root, { fix: rest.includes('--fix') })
+      const scope = rest.find((arg) => !arg.startsWith('--')) ?? null
+      const result = auditRepo(root, { fix: rest.includes('--fix'), scope })
       console.log(formatFindings(result))
       process.exit(result.findings.length ? 1 : 0)
       break

@@ -28,14 +28,15 @@ function lineOf(code, index) {
  * Every finding carries an evidence tag: these two checks are grounded in the
  * repo's own contract, so they are [PRODUCT]-level evidence, not opinion.
  */
-export function auditRepo(root, { files = null, fix = false } = {}) {
+export function auditRepo(root, { files = null, fix = false, scope = null } = {}) {
   const { contract, tokens } = readContract(root)
   const findings = []
   const fixes = []
   const hasColorTokens = contract.counts.colorTokens > 0
   const paletteTokens = tokens.filter((t) => t.kind === 'color' || t.kind === 'alias')
 
-  const targets = (files ?? walkFiles(root, { extensions: ['.tsx', '.jsx'], maxFiles: 20000 })
+  const scopeRoot = scope ? path.join(root, scope) : root
+  const targets = (files ?? walkFiles(scopeRoot, { extensions: ['.tsx', '.jsx'], maxFiles: 20000, maxDepth: 12 })
     .map((f) => path.relative(root, f)))
     .filter((rel) => !isExemptFile(rel))
 
