@@ -26,5 +26,10 @@
     "lint",
     "contract"
   ],
-  "license": "MIT"
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zielivia/houserules.git"
+  },
+  "homepage": "https://github.com/zielivia/houserules#readme"
 }
