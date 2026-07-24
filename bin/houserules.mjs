@@ -4,13 +4,15 @@ import { buildContract, writeContract, hasContract, CONTRACT_DIR } from '../src/
 import { installSkills } from '../src/skills.mjs'
 import { auditRepo, formatFindings } from '../src/audit.mjs'
 import { syncContract, formatDrift } from '../src/sync.mjs'
+import { generateGallery } from '../src/gallery.mjs'
 
 const HELP = `houserules — your repo's conventions, made executable.
 
 Usage:
   houserules init            Scan the repo, write ${CONTRACT_DIR}/, install agent skills
-  houserules audit           Check source files against the contract
+  houserules audit [--fix]   Check source files against the contract (--fix: replace hardcoded colors with the nearest token)
   houserules sync [--check]  Re-scan and regenerate the contract (--check: report drift only, exit 1 on drift)
+  houserules gallery         Generate ${CONTRACT_DIR}/gallery.html — tokens, components and screen shapes on one page
   houserules help            This message
 
 The contract lives in ${CONTRACT_DIR}/ and is meant to be committed. The manual
@@ -41,9 +43,18 @@ function main() {
         console.error('houserules: no contract found. Run `houserules init` first.')
         process.exit(1)
       }
-      const result = auditRepo(root)
+      const result = auditRepo(root, { fix: rest.includes('--fix') })
       console.log(formatFindings(result))
       process.exit(result.findings.length ? 1 : 0)
+      break
+    }
+    case 'gallery': {
+      if (!hasContract(root)) {
+        console.error('houserules: no contract found. Run `houserules init` first.')
+        process.exit(1)
+      }
+      const file = generateGallery(root)
+      console.log(`houserules gallery: written to ${file}`)
       break
     }
     case 'sync': {

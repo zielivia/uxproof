@@ -28,8 +28,14 @@ Commit the lot. The contract is versioned, reviewable and argued about in PRs �
 |---|---|
 | `houserules init` | Scan, write contract, install skills |
 | `houserules audit` | Check source files against the contract (exit 1 on findings — CI-friendly) |
+| `houserules audit --fix` | Replace hardcoded colors with the nearest token (perceptual distance in Oklab; semantic aliases win ties; distant colors are reported, never guessed) |
 | `houserules sync` | Re-scan and regenerate the contract; manual rules survive |
 | `houserules sync --check` | Report drift only, exit 1 if the contract is stale (CI-friendly) |
+| `houserules gallery` | Generate `.houserules/gallery.html` — a self-contained page with color swatches (click to copy), token tables, the component inventory and screen shapes |
+
+## Screen shapes
+
+`init` also classifies the repo's pages into archetypes — list, detail, form, settings, dashboard — and records the canonical examples in `conventions.md`. A new screen starts from "model it on this file", not from a blank page.
 
 ## Audit rules (MVP)
 

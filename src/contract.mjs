@@ -3,6 +3,7 @@ import path from 'node:path'
 import { scanRepo } from './scan.mjs'
 import { extractTokens, colorTokens } from './tokens.mjs'
 import { extractComponents, nativeEquivalentsPresent } from './components.mjs'
+import { detectArchetypes } from './archetypes.mjs'
 
 export const CONTRACT_DIR = '.houserules'
 const MANUAL_START = '<!-- houserules:manual-start -->'
@@ -12,6 +13,7 @@ export function buildContract(root) {
   const scan = scanRepo(root)
   const { sources, tokens } = extractTokens(root, scan.styling.cssFiles)
   const components = extractComponents(root, scan.componentRoots)
+  const archetypes = detectArchetypes(root)
   return {
     version: 1,
     generatedBy: 'houserules',
@@ -25,6 +27,7 @@ export function buildContract(root) {
     libraries: scan.libraries,
     componentRoots: scan.componentRoots,
     nativeEquivalents: nativeEquivalentsPresent(components),
+    archetypes,
     counts: {
       tokens: tokens.length,
       colorTokens: colorTokens(tokens).length,
@@ -81,6 +84,16 @@ function renderConventions(contract, manualSection) {
     lines.push('')
     for (const { element, component } of contract.nativeEquivalents) {
       lines.push(`- \`<${element}>\` → \`<${component}>\``)
+    }
+    lines.push('')
+  }
+  if (contract.archetypes?.length) {
+    lines.push('## Screen shapes')
+    lines.push('')
+    lines.push('Building a new screen? Find its shape below and model yours on the examples — structure, naming, states — instead of starting blank.')
+    lines.push('')
+    for (const { kind, count, examples } of contract.archetypes) {
+      lines.push(`- **${kind}** (${count} screen${count === 1 ? '' : 's'}): ${examples.map((e) => `\`${e}\``).join(', ')}`)
     }
     lines.push('')
   }

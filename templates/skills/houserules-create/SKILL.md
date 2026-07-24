@@ -12,7 +12,7 @@ You are building in a repo with an executable contract at `.houserules/`. Your j
 1. Read `.houserules/conventions.md` — stack, rules, and the manual section (team judgment calls; they override everything else in this skill).
 2. Read `.houserules/contract.json` — component roots, native-element equivalents, libraries in use.
 3. Search `.houserules/components.json` for components matching what you are about to build. If a house component exists, use it. Never re-implement something the registry already has.
-4. Find 1-2 existing screens of the same shape in the repo (list, detail, form, settings) and open them. Copy their structure, naming and idiom — not your own.
+4. Find 1-2 existing screens of the same shape and open them. The "Screen shapes" section of `conventions.md` lists the repo's archetypes (list, detail, form, settings, dashboard) with canonical example files — start there. Copy their structure, naming and idiom — not your own.
 
 ## Interview first when the ask is vague
 
