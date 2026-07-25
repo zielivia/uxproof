@@ -1,6 +1,6 @@
 import fs from 'node:fs'
 import path from 'node:path'
-import { scanRepo } from './scan.mjs'
+import { scanRepo, looksLikeScratch } from './scan.mjs'
 import { extractTokens, colorTokens } from './tokens.mjs'
 import { extractComponents, nativeEquivalentsPresent } from './components.mjs'
 import { detectArchetypes } from './archetypes.mjs'
@@ -9,6 +9,24 @@ import { deriveDefactoPalette } from './palette.mjs'
 export const CONTRACT_DIR = '.uxproof'
 const MANUAL_START = '<!-- uxproof:manual-start -->'
 const MANUAL_END = '<!-- uxproof:manual-end -->'
+
+/**
+ * A contract is only as good as what it read. Flag the case that silently
+ * ruins one: scratch or generated stylesheets outweighing the real ones.
+ */
+function contractWarnings(sources, totalTokens) {
+  if (!totalTokens) return []
+  const scratch = sources.filter((s) => looksLikeScratch(s.file))
+  const scratchTokens = scratch.reduce((sum, s) => sum + s.tokenCount, 0)
+  if (!scratchTokens) return []
+  const share = Math.round((100 * scratchTokens) / totalTokens)
+  if (share < 20) return []
+  return [
+    `${share}% of tokens (${scratchTokens} of ${totalTokens}) come from files that look like scratch or generated output: ` +
+      `${scratch.slice(0, 3).map((s) => s.file).join(', ')}${scratch.length > 3 ? ', …' : ''}. ` +
+      `Delete or exclude them and re-run \`uxproof sync\` — a contract judging by throwaway files is not your design system.`,
+  ]
+}
 
 export function buildContract(root) {
   const scan = scanRepo(root)
@@ -19,6 +37,7 @@ export function buildContract(root) {
   // tokens never arm the audit (colorTokens stays 0).
   const derivedPalette = colorTokens(tokens).length === 0 ? deriveDefactoPalette(root) : []
   const allTokens = derivedPalette.length ? [...tokens, ...derivedPalette] : tokens
+  const warnings = contractWarnings(sources, tokens.length)
   return {
     version: 1,
     generatedBy: 'uxproof',
@@ -33,6 +52,7 @@ export function buildContract(root) {
     componentRoots: scan.componentRoots,
     nativeEquivalents: nativeEquivalentsPresent(components),
     archetypes,
+    warnings,
     counts: {
       tokens: tokens.length,
       colorTokens: colorTokens(tokens).length,
@@ -77,6 +97,10 @@ function renderConventions(contract, manualSection) {
   lines.push('')
   lines.push('Rule: colors come from tokens. A raw hex/rgb value in component code is a finding unless the manual section grants an exception.')
   lines.push('')
+  for (const warning of contract.warnings ?? []) {
+    lines.push(`> ⚠️ ${warning}`)
+    lines.push('')
+  }
   if (contract.counts.proposedColors > 0) {
     lines.push('### Proposed palette (derived from code)')
     lines.push('')

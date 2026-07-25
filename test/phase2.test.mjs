@@ -128,3 +128,30 @@ test('a repo with no declared tokens gets a proposed de facto palette that never
   assert.ok(!result.findings.some((f) => f.rule === 'no-hardcoded-colors'))
   fs.rmSync(bare, { recursive: true, force: true })
 })
+
+test('scratch directories are skipped and scratch-looking sources raise a warning', () => {
+  const dirty = fs.mkdtempSync(path.join(os.tmpdir(), 'uxproof-dirty-'))
+  fs.cpSync(FIXTURE_SRC, dirty, { recursive: true })
+  // A dump left in tmp/: never scanned at all.
+  fs.mkdirSync(path.join(dirty, 'tmp'), { recursive: true })
+  fs.writeFileSync(
+    path.join(dirty, 'tmp', 'extracted-tokens.css'),
+    ':root {' + Array.from({ length: 40 }, (_, i) => `--junk-${i}: #00000${i % 10};`).join('') + '}',
+  )
+  // A dump inside a scanned directory: read, but flagged.
+  fs.writeFileSync(
+    path.join(dirty, 'src', 'app', 'extracted-theme.css'),
+    ':root {' + Array.from({ length: 30 }, (_, i) => `--dump-${i}: #11111${i % 10};`).join('') + '}',
+  )
+  const contract = buildContract(dirty)
+  const tokenNames = contract._tokens.map((t) => t.name)
+  assert.ok(!tokenNames.some((n) => n.startsWith('junk-')), 'tmp/ must not be scanned')
+  assert.ok(tokenNames.some((n) => n.startsWith('dump-')), 'scanned scratch files are still read')
+  assert.equal(contract.warnings.length, 1)
+  assert.match(contract.warnings[0], /scratch or generated output/)
+  assert.match(contract.warnings[0], /extracted-theme\.css/)
+  writeContract(dirty, contract)
+  const conventions = fs.readFileSync(path.join(dirty, '.uxproof', 'conventions.md'), 'utf8')
+  assert.ok(conventions.includes('⚠️'), 'the warning is visible in the human-readable contract')
+  fs.rmSync(dirty, { recursive: true, force: true })
+})

@@ -2,9 +2,28 @@ import fs from 'node:fs'
 import path from 'node:path'
 
 const SKIP_DIRS = new Set([
+  // Dependencies, build output and caches.
   'node_modules', '.git', '.next', 'dist', 'build', 'out', 'coverage',
-  '.turbo', '.cache', '.vercel', 'storybook-static',
+  '.turbo', '.cache', '.vercel', 'storybook-static', '.parcel-cache',
+  '.svelte-kit', '.astro', '.output', '.yarn', '.pnpm-store', 'target',
+  // Scratch space. A contract built from throwaway files judges by garbage:
+  // real repos accumulate extraction dumps and experiments here.
+  'tmp', 'temp', '.tmp', '.temp', 'scratch',
+  // Vendored code and language environments — not this team's design system.
+  'vendor', '.venv', 'venv', '__pycache__',
+  // Editor state.
+  '.idea', '.vscode',
 ])
+
+/**
+ * Files that look like scratch or generated output even when they sit in a
+ * scanned directory (extraction dumps, backups, copies). Their tokens are
+ * still read, because they may be the only source in an unusual layout, but
+ * they raise a warning: a contract dominated by them is not the team's system.
+ */
+export function looksLikeScratch(relPath) {
+  return /(^|[/\-_])(extracted|generated|backup|bak|old|copy|sample|draft)([/\-_.]|$)/i.test(relPath)
+}
 
 /** Walk the repo collecting files, bounded by depth and count so huge monorepos stay fast. */
 export function walkFiles(root, { maxDepth = 7, maxFiles = 20000, extensions = null } = {}) {

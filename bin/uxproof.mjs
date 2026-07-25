@@ -40,6 +40,7 @@ function main() {
       console.log(`uxproof init: contract written to ${dir}`)
       console.log(`  framework: ${contract.framework}${contract.workspace ? ' (monorepo)' : ''}, styling: ${contract.styling.system}`)
       console.log(`  tokens: ${contract.counts.tokens} (${contract.counts.colorTokens} colors), components: ${contract.counts.components}`)
+      for (const warning of contract.warnings ?? []) console.warn(`  ⚠️  ${warning}`)
       console.log(withSkills ? `  skills installed: ${skills.join(', ')}` : '  skills: skipped (--no-skills)')
       console.log('Next: open .uxproof/conventions.md and fill the manual section. Commit the lot.')
       break

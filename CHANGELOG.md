@@ -23,3 +23,12 @@ Renamed to uxproof: the npm similarity rule blocks the previous name
 (an existing package differs only by a hyphen). Same tool, new command
 (npx uxproof), new contract directory (.uxproof/), bundled skills
 renamed accordingly. No behavior changes.
+
+## 0.3.1 (2026-07-25)
+
+A contract is only as good as what it read. Scratch space (tmp, temp,
+scratch), vendored code and language environments are no longer scanned,
+and stylesheets that look like extraction dumps or backups now raise a
+warning when they contribute a fifth or more of the tokens. Found on a
+real repository where 533 of 761 tokens came from a leftover tmp dump,
+leaving the contract judging by throwaway files.
